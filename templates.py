@@ -83,6 +83,7 @@ def wb_factory(filename, options=None, properties=None):
     css.add(css.total + css.percent)
     css.add(css.total + css.percent1)
     css.add(css.grandtotal + css.currency2)
+    css.add(css.grandtotal + css.accounting2)
     css.add(css.grey + css.bold)
     css.add(css.grey_bold + css.right)
     css.add(css.grey + css.currency)
