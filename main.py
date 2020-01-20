@@ -108,7 +108,14 @@ class StyleSheet(object):
         return self._styles.get(name)
 
     def get(self, name):
-        return self._styles.get(name)
+        style = self._styles.get(name)
+        # if style is None:
+        #     styles = name.split(',')
+        #     results = list(self._styles.get(s, False) for s in styles)
+        #     if all(results):
+        #         style = self.add(sum(results))
+        #         print(style)
+        return style
 
     def add(self, style):
         if not isinstance(style, Style):
@@ -361,6 +368,7 @@ class XlWorksheet(Worksheet):
         super(XlWorksheet, self).__init__(*args, **kwargs)
         self._cells = {}
         self._rows = []
+        self._merged = []
         self._row = 0
         self._col = 0
         self._lastrow = 0
@@ -434,6 +442,19 @@ class XlWorksheet(Worksheet):
         if abs:
             location = f"'{self.name}'!{location}"
         return location
+
+    def xlrange(self, x1=None, y1=None, x2=None, y2=None, dx=0, dy=0):
+        if x1 is None:
+            x1 = self._col
+        if y1 is None:
+            y1 = self._row
+
+        if x2 is None:
+            x2 = x1 + dx
+        if y2 is None:
+            y2 = y1 + dy
+
+        return xl_range(y1, x1, y2, x2)
 
     def set_format(self, row, col, style):
         """Will replace any existing format."""
@@ -513,8 +534,10 @@ class XlWorksheet(Worksheet):
             row = self._row
         if col is None:
             col = self._col
-        rng = xl_range(row, col + num_cols * dirn, row, col + 1 * dirn)
-        formula = self.total_formula(rng, ftype)
+        formula = ''
+        if num_cols > 0:
+            rng = xl_range(row, col + num_cols * dirn, row, col + 1 * dirn)
+            formula = self.total_formula(rng, ftype)
         result = self.cell(
             formula, self.get_style(style),
             'formula', row=row, col=col
@@ -528,6 +551,32 @@ class XlWorksheet(Worksheet):
             return '=SUBTOTAL(9,' + range + ')'
         else:
             return '=SUM(' + range + ')'
+
+    def mult_formula(self, r1, c1, r2, c2, neg=False):
+        a = xl_rowcol_to_cell(r1, c1)
+        b = xl_rowcol_to_cell(r2, c2)
+        sign = ''
+        if neg:
+            sign = '-'
+        return f"={sign}{a}*{b}"
+
+    def vmult_formula(self, r1_rel, r2_rel, neg=False):
+        return self.mult_formula(
+            self._row + r1_rel,
+            self._col,
+            self._row + r2_rel,
+            self._col,
+            neg
+        )
+
+    def hmult_formula(self, c1_rel, c2_rel, neg=False):
+        return self.mult_formula(
+            self._row,
+            self._col + c1_rel,
+            self._row,
+            self._col + c2_rel,
+            neg
+        )
 
     def div_formula(
         self, r_numer, c_numer, r_denom, c_denom, default=None, neg=False
@@ -591,6 +640,8 @@ class XlWorksheet(Worksheet):
             row.write(self)
         for cell in sorted(self._cells.values()):
             cell.write(self)
+        for rng in self._merged:
+            pass
 
     def print_cells(self):
         for loc, cell in self._cells.items():
@@ -717,6 +768,9 @@ class XlWorkbook(Workbook):
 
     def load_styles(self, style_dict):
         return self._css.load(style_dict)
+
+    def add_style(self, style):
+        return self._css.add(style)
 
     def build_styles(self):
         if not hasattr(self, '_css'):

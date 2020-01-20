@@ -12,6 +12,7 @@ formats = {
     'centered': {'align': 'center'},
     'left': {'align': 'justify'},
     'right': {'align': 'right'},
+    'longtext': {'align': 'center_across', 'text_wrap': True},
     'indent': {'indent': 1},
     'indent2': {'indent': 2},
     'indent3': {'indent': 3},
@@ -29,6 +30,7 @@ formats = {
     'grey': {'bg_color': '#D9D9D9'},
     'bold': {'bold': True},
     'eq_mult': {'num_format': '0.00"x"'},
+    'eqmult': {'num_format': '0.00"x"'},
     'center_across': {'align': 'center_across'},
     'title': {'font_size': '11'},
     'subtitle': {'font_size': '11'},
@@ -78,6 +80,7 @@ def wb_factory(filename, options=None, properties=None):
     css.add(css.total + css.currency2)
     css.add(css.total + css.accounting)
     css.add(css.total + css.accounting2)
+    css.add(css.subtotal + css.accounting2)
     css.add(css.total + css.number)
     css.add(css.total + css.number3)
     css.add(css.total + css.percent)
