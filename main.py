@@ -544,6 +544,14 @@ class XlWorksheet(Worksheet):
         )
         return result
 
+    def hvariance(self, c1_rel, c2_rel, style=None):
+        row = self.y()
+        c1 = self.x() + c1_rel
+        c2 = self.x() + c2_rel
+        a = xl_rowcol_to_cell(row, c1)
+        b = xl_rowcol_to_cell(row, c2)
+        return self.cell(f"={a}-{b}", self.get_style(style))
+
     def total_formula(self, range, ftype=0):
         subtot = ftype==1 or \
             (isinstance(ftype, str) and ftype.lower()=='subtotal')
