@@ -1,6 +1,8 @@
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 __VERSION__ = __version__
-# print(f'xlmaker version: {__version__}')
-from .main import XlWorkbook, get_field, \
-    divide as div, multiply as mult
-from .templates import wb_factory, Column
+
+from .workbook import XlWorkbook
+from .worksheet import XlWorksheet
+from .style import Style
+from .stylesheet import StyleSheet
+from .row import Row

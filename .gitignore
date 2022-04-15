@@ -4,10 +4,12 @@ media
 venv
 .env
 _data
+_scratchwork
 geckodriver.log
 
 *.pyc
 *.sublime-workspace
+*.code-workspace
 .coverage
 
 
