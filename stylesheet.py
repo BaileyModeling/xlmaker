@@ -120,6 +120,9 @@ class StyleSheet:
 
     def combine_styles(self, styles) -> Style:
         """styles: list of string names of styles"""
+        name = "_".join(styles)
+        if name in self._styles:
+            return self._styles[name]
         objects = []
         # for style in sorted(styles): sorting impacts cascade
         for style in styles:
