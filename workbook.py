@@ -1,3 +1,4 @@
+from pathlib import Path
 from xlsxwriter.workbook import Workbook
 from xlsxwriter.chartsheet import Chartsheet
 from .worksheet import XlWorksheet
@@ -109,6 +110,8 @@ class XlWorkbook(Workbook):
             self.css.name = self.add_format(style.get_properties())
 
     def build(self):
+        filepath = Path(self.filename).resolve().parent
+        filepath.mkdir(parents=True, exist_ok=True)
         for ws in self.worksheets_objs:
             ws.build(self)
         self.close()
