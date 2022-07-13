@@ -115,6 +115,7 @@ class XlWorkbook(Workbook):
         for ws in self.worksheets_objs:
             ws.build(self)
         self.close()
+        print("File created: ", Path(self.filename).resolve())
 
     def get_format(self, name):
         return self.css.get(name).get_format(self)
